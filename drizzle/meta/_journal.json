@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1697352929538,
+      "tag": "0000_bouncy_millenium_guard",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1697355148206,
+      "tag": "0001_clever_bucky",
+      "breakpoints": true
+    }
+  ]
+}
