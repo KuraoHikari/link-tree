@@ -15,6 +15,20 @@
       "when": 1697355148206,
       "tag": "0001_clever_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1697521522330,
+      "tag": "0002_cultured_morph",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1697521939347,
+      "tag": "0003_equal_russian",
+      "breakpoints": true
     }
   ]
 }
