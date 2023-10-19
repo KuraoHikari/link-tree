@@ -82,8 +82,8 @@ export const buttons = pgTable("button", {
  id: uuid("id").defaultRandom().primaryKey(),
  text: text("text").notNull(),
  link: text("link").notNull(),
- userId: integer("user_id"),
- linkTreeId: integer("linkTree_id"),
+ userId: text("user_id").notNull(),
+ linkTreeId: text("linkTree_id").notNull(),
 });
 
 export const linkTreesRelations = relations(
