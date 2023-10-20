@@ -49,6 +49,14 @@ export async function PATCH(
     status: 400,
    });
   }
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+   return new NextResponse("Unauthorized", {
+    status: 401,
+   });
+  }
   const updateLinkTreeSchema = linkTreeSchema.omit({
    id: true,
    userId: true,
@@ -76,6 +84,13 @@ export async function PATCH(
 
   //find link tree
   if (!findLinkTree) {
+   return new NextResponse("linkTree Not Found", {
+    status: 404,
+   });
+  }
+
+  //not user link tree
+  if (findLinkTree.userId !== session?.user?.id) {
    return new NextResponse("linkTree Not Found", {
     status: 404,
    });
