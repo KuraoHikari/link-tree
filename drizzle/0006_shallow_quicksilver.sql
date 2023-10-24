@@ -1,0 +1,1 @@
+ALTER TABLE "button" ALTER COLUMN "linkTree_id" SET DATA TYPE uuid;

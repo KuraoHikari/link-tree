@@ -1,8 +1,7 @@
 import { db } from "@/db";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import { and, eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { linkTreeSchema } from "@/db/drizzle-zod/schemaValidation";
 import { catchApiError } from "@/lib/utils";
 import { linkTrees } from "@/db/schema";

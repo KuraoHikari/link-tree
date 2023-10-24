@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
+import { nanoid } from "nanoid";
 
 export const users = pgTable("user", {
  id: text("id").notNull().primaryKey(),
@@ -69,21 +70,31 @@ export const verificationTokens = pgTable(
 );
 
 export const linkTrees = pgTable("linkTree", {
- id: uuid("id").defaultRandom().primaryKey(),
+ id: text("id")
+  .$defaultFn(() => nanoid(10))
+  .primaryKey(),
  title: text("title").notNull(),
  description: text("description").notNull(),
- userId: text("user_id").notNull(),
+ userId: text("user_id")
+  .notNull()
+  .references(() => users.id, { onDelete: "cascade" }),
  createdAt: timestamp("created_at", {
   mode: "date",
  }).defaultNow(),
 });
 
 export const buttons = pgTable("button", {
- id: uuid("id").defaultRandom().primaryKey(),
+ id: text("id")
+  .$defaultFn(() => nanoid(10))
+  .primaryKey(),
  text: text("text").notNull(),
  link: text("link").notNull(),
- userId: text("user_id").notNull(),
- linkTreeId: text("linkTree_id").notNull(),
+ userId: text("user_id")
+  .notNull()
+  .references(() => users.id, { onDelete: "cascade" }),
+ linkTreeId: text("linkTree_id")
+  .notNull()
+  .references(() => linkTrees.id, { onDelete: "cascade" }),
 });
 
 export const linkTreesRelations = relations(

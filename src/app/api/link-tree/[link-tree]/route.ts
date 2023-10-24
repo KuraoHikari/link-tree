@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import { and, eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 import { linkTrees } from "@/db/schema";
 import { linkTreeSchema } from "@/db/drizzle-zod/schemaValidation";
 import { catchApiError } from "@/lib/utils";
@@ -57,6 +57,7 @@ export async function PATCH(
     status: 401,
    });
   }
+
   const updateLinkTreeSchema = linkTreeSchema.omit({
    id: true,
    userId: true,
@@ -91,8 +92,8 @@ export async function PATCH(
 
   //not user link tree
   if (findLinkTree.userId !== session?.user?.id) {
-   return new NextResponse("linkTree Not Found", {
-    status: 404,
+   return new NextResponse("Unauthorized", {
+    status: 401,
    });
   }
 
@@ -131,18 +132,38 @@ export async function DELETE(
    });
   }
 
-  const linkTree = await db.query.linkTrees.findFirst({
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+   return new NextResponse("Unauthorized", {
+    status: 401,
+   });
+  }
+
+  const findLinkTree = await db.query.linkTrees.findFirst({
    where: (linkTree, { eq }) =>
     eq(linkTree.id, params.linkTreeId),
   });
 
-  if (!linkTree) {
+  if (!findLinkTree) {
    return new NextResponse("linkTree Not Found", {
     status: 404,
    });
   }
 
-  return NextResponse.json({ data: linkTree });
+  if (findLinkTree.userId !== session?.user?.id) {
+   return new NextResponse("Unauthorized", {
+    status: 401,
+   });
+  }
+
+  await db
+   .delete(linkTrees)
+   .where(eq(linkTrees.id, params.linkTreeId));
+
+  return NextResponse.json({
+   data: { message: `${params.linkTreeId} is deleted` },
+  });
  } catch (error) {
   return new NextResponse("Internal Error", {
    status: 500,
