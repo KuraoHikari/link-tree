@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import ky from "ky";
 import { Plus } from "lucide-react";
+import { useModal } from "@/hooks/useModalStore";
 
 export default function AdminPage() {
+ const { onOpen } = useModal();
  const onSubmit = async () => {
   try {
    const res = await ky.post("/api/link-tree");
@@ -31,7 +33,7 @@ export default function AdminPage() {
       Manage link-tree for you
      </p>
     </div>
-    <Button onClick={() => {}}>
+    <Button onClick={() => onOpen("createLinkTree")}>
      <Plus className="mr-2 h-4 w-4" /> Add New
     </Button>
    </div>
