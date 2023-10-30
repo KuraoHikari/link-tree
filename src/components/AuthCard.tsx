@@ -48,19 +48,20 @@ const AuthCard = ({ className, ...props }: CardProps) => {
    {...props}
   >
    <CardHeader>
-    <CardTitle>Sign-Up</CardTitle>
-    <CardDescription>
+    <CardTitle className="text-gray-700">Sign-Up</CardTitle>
+    <CardDescription className="text-gray-500">
      To Create your own link-tree.
     </CardDescription>
    </CardHeader>
    <CardContent className="grid gap-4">
     <Button
      type="button"
+     className="bg-black"
      disabled={isLoading}
      onClick={loginWithGoogle}
     >
      <FcGoogle className="text-lg" />
-     <p className="ms-2">Google</p>
+     <p className="ms-2 text-gray-200">Google</p>
     </Button>
    </CardContent>
   </Card>

@@ -1,42 +1,31 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/components/ui/data-table";
+import {
+ LinkTreeColumn,
+ columns,
+} from "./adminTable/columns";
+import HeaderTable from "./adminTable/headerTable";
 import ky from "ky";
-import { Plus } from "lucide-react";
-import { useModal } from "@/hooks/useModalStore";
+import { toast } from "sonner";
 
 export default function AdminPage() {
- const { onOpen } = useModal();
- const onSubmit = async () => {
-  try {
-   const res = await ky.post("/api/link-tree");
-   const json = await res.json();
-
-   console.log(
-    "🚀 ~ file: page.tsx:13 ~ onSubmit ~ json:",
-    json
-   );
-  } catch (error) {
-   console.log(error);
-  }
- };
+ //fectch data from client
+ //  const formattedBillboards: LinkTreeColumn[] =
+ //  FetchLinkTree.map((item) => ({
+ //    id: item.id,
+ //    label: item.label,
+ //    createdAt: format(item.createdAt, "MMMM do, yyyy"),
+ //   }));
 
  return (
   <div className="flex-1 space-y-4 p-8 pt-6">
-   <div className="flex items-center justify-between">
-    <div>
-     <h2 className="text-3xl font-bold tracking-tight">
-      Link Tree
-     </h2>
-     <p className="text-sm text-muted-foreground">
-      Manage link-tree for you
-     </p>
-    </div>
-    <Button onClick={() => onOpen("createLinkTree")}>
-     <Plus className="mr-2 h-4 w-4" /> Add New
-    </Button>
-   </div>
+   <HeaderTable />
+   <Separator />
+   <DataTable
+    searchKey="label"
+    columns={columns}
+    data={[]}
+   />
   </div>
  );
 }

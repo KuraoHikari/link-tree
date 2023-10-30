@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/dialog";
 import { linkTreeSchema } from "@/db/drizzle-zod/schemaValidation";
 import { useModal } from "@/hooks/useModalStore";
+import ky from "ky";
+import { toast } from "sonner";
 
 const formSchema = linkTreeSchema.omit({
  id: true,
@@ -51,11 +53,14 @@ export const CreateLinkTreeModal = () => {
   values: z.infer<typeof formSchema>
  ) => {
   try {
-   form.reset();
+   const json = await ky
+    .post("/api/link-tree", { json: values })
+    .json();
 
+   form.reset();
    onClose();
-  } catch (error) {
-   console.log(error);
+  } catch (error: any) {
+   return toast.error(error.message);
   }
  };
 

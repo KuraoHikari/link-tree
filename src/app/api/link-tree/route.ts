@@ -61,6 +61,10 @@ export async function GET() {
  try {
   //validate login user
   const session = await getServerSession(authOptions);
+  console.log(
+   "🚀 ~ file: route.ts:64 ~ GET ~ session:",
+   session
+  );
 
   if (!session?.user?.id) {
    return new NextResponse("Unauthorized", {
