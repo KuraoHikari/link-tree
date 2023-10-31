@@ -53,9 +53,7 @@ export const CreateLinkTreeModal = () => {
   values: z.infer<typeof formSchema>
  ) => {
   try {
-   const json = await ky
-    .post("/api/link-tree", { json: values })
-    .json();
+   await ky.post("/api/link-tree", { json: values }).json();
 
    form.reset();
    onClose();

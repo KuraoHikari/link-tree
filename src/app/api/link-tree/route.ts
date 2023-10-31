@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 }
 
 //get link-tree
-export async function GET() {
+export async function GET(req: Request, res: Response) {
  try {
   //validate login user
   const session = await getServerSession(authOptions);
