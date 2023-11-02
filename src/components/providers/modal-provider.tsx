@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CreateLinkTreeModal } from "../modals/createLInkTreeModal";
+import { CreateButtonTreeModal } from "../modals/createButttonTree";
 
 export const ModalProvider = () => {
  const [isMounted, setIsMounted] = useState(false);
@@ -17,6 +18,7 @@ export const ModalProvider = () => {
  return (
   <>
    <CreateLinkTreeModal />
+   <CreateButtonTreeModal />
   </>
  );
 };

@@ -1,3 +1,5 @@
+"use client";
+
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 import {
@@ -5,31 +7,44 @@ import {
  columns,
 } from "./adminTable/columns";
 import HeaderTable from "./adminTable/headerTable";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { db } from "@/db";
+import ky from "ky";
+import { useQuery } from "@tanstack/react-query";
+// import { getServerSession } from "next-auth";
+// import { authOptions } from "@/lib/auth";
+// import { db } from "@/db";
 
-export default async function AdminPage() {
- const session = await getServerSession(authOptions);
+async function getLinkTrees() {
+ const res = await ky.get("api/link-tree");
+ const users = (await res.json()) as PostType;
+ return users;
+}
 
- if (!session?.user?.id) {
-  return null;
- }
+type PostType = {
+ data: {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: Date;
+ }[];
+};
 
- //find all link-tree user have
- const linkTrees = await db.query.linkTrees.findMany({
-  where: (linkTrees, { eq }) =>
-   eq(linkTrees.userId, session?.user?.id),
+export default function AdminPage() {
+ const { data, error, isLoading } = useQuery<PostType>({
+  queryKey: ["link-trees"],
+  queryFn: () => getLinkTrees(),
  });
 
- const formattedLinkTrees: LinkTreeColumn[] = linkTrees.map(
-  (item) => ({
-   id: item.id,
-   title: item.title,
-   description: item.description,
-   createdAt: `${item.createdAt?.toDateString()}`,
-  })
- );
+ if (isLoading) return "Loading...";
+
+ if (error)
+  return "An error has occurred: " + error.message;
+
+ const formattedLinkTrees = data?.data?.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  createdAt: `${item.createdAt?.toString()}`,
+ }));
 
  return (
   <div className="flex-1 space-y-4 p-8 pt-6">
@@ -38,7 +53,7 @@ export default async function AdminPage() {
    <DataTable
     searchKey="title"
     columns={columns}
-    data={formattedLinkTrees}
+    data={formattedLinkTrees ? formattedLinkTrees : []}
    />
   </div>
  );

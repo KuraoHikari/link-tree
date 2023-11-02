@@ -3,13 +3,17 @@ import { create } from "zustand";
 export type ModalType =
  | "createLinkTree"
  | "deleteLinkTree"
- | "editLinkTree";
+ | "editLinkTree"
+ | "createButtonTree"
+ | "editButtonTree"
+ | "deleteButtonTree";
 
 interface ModalData {
  linkTree?: {
   title: string;
   description: string;
  };
+ linkTreeId?: string;
 }
 
 interface ModalStore {

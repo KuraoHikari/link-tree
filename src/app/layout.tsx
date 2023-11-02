@@ -6,6 +6,8 @@ import ToasterContext from "@/context/ToasterContext";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ModalProvider } from "@/components/providers/modal-provider";
 
+import Providers from "@/components/providers/react-query-provider";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -26,11 +28,13 @@ export default function RootLayout({
      defaultTheme="dark"
      disableTransitionOnChange
     >
-     <AuthContext>
-      <ModalProvider />
-      <ToasterContext />
-      {children}
-     </AuthContext>
+     <Providers>
+      <AuthContext>
+       <ModalProvider />
+       <ToasterContext />
+       {children}
+      </AuthContext>
+     </Providers>
     </ThemeProvider>
    </body>
   </html>
