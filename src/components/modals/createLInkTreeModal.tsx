@@ -27,6 +27,7 @@ import { linkTreeSchema } from "@/db/drizzle-zod/schemaValidation";
 import { useModal } from "@/hooks/useModalStore";
 import ky from "ky";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = linkTreeSchema.omit({
  id: true,
@@ -36,6 +37,7 @@ const formSchema = linkTreeSchema.omit({
 
 export const CreateLinkTreeModal = () => {
  const { isOpen, onClose, type } = useModal();
+ const queryClient = useQueryClient();
 
  const isModalOpen = isOpen && type === "createLinkTree";
 
@@ -54,7 +56,10 @@ export const CreateLinkTreeModal = () => {
  ) => {
   try {
    await ky.post("/api/link-tree", { json: values }).json();
-
+   await queryClient.invalidateQueries({
+    queryKey: ["link-trees"],
+    refetchType: "active",
+   });
    form.reset();
    onClose();
   } catch (error: any) {

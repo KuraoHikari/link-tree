@@ -9,41 +9,38 @@ import {
 import HeaderTable from "./adminTable/headerTable";
 import ky from "ky";
 import { useQuery } from "@tanstack/react-query";
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/lib/auth";
-// import { db } from "@/db";
+import { catchError } from "@/lib/utils";
 
-async function getLinkTrees() {
+export async function getLinkTrees() {
  const res = await ky.get("api/link-tree");
- const users = (await res.json()) as PostType;
+ const users = (await res.json()) as dataLinkTreeType;
  return users;
 }
 
-type PostType = {
- data: {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: Date;
- }[];
+type dataLinkTreeType = {
+ data: LinkTreeColumn[];
 };
 
 export default function AdminPage() {
- const { data, error, isLoading } = useQuery<PostType>({
-  queryKey: ["link-trees"],
-  queryFn: () => getLinkTrees(),
- });
+ const { data, error, isLoading } =
+  useQuery<dataLinkTreeType>({
+   queryKey: ["link-trees"],
+   queryFn: () => getLinkTrees(),
+  });
 
  if (isLoading) return "Loading...";
 
- if (error)
-  return "An error has occurred: " + error.message;
+ if (error) {
+  catchError(error);
+ }
 
  const formattedLinkTrees = data?.data?.map((item) => ({
   id: item.id,
   title: item.title,
   description: item.description,
-  createdAt: `${item.createdAt?.toString()}`,
+  createdAt: `${new Date(item.createdAt).toLocaleDateString(
+   "en-GB"
+  )}`,
  }));
 
  return (
