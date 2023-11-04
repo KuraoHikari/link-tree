@@ -6,6 +6,39 @@ import { catchApiError } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
+export async function GET(
+ req: Request,
+ { params }: { params: { linkTreeId: string } }
+) {
+ try {
+  if (!params.linkTreeId) {
+   return new NextResponse("linkTree id is required", {
+    status: 400,
+   });
+  }
+
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+   return new NextResponse("Unauthorized", {
+    status: 401,
+   });
+  }
+
+  //find all button tree
+  const buttonTrees = await db.query.buttons.findMany({
+   where: (buttons, { eq }) =>
+    eq(buttons.linkTreeId, params.linkTreeId),
+  });
+
+  return NextResponse.json({ data: buttonTrees });
+ } catch (error) {
+  return new NextResponse("Internal Error", {
+   status: 500,
+  });
+ }
+}
+
 export async function POST(
  req: Request,
  { params }: { params: { linkTreeId: string } }
