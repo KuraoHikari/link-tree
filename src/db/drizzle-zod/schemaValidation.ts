@@ -19,5 +19,12 @@ export const linkTreeSchema = createInsertSchema(
 
 export const buttonSchema = createInsertSchema(buttons, {
  text: z.string().min(1).max(40),
- link: z.string().min(3).url(),
+ link: z
+  .string()
+  .min(3)
+  .url()
+  .startsWith("https://", {
+   message: "Must provide secure URL",
+  })
+  .url({ message: "Invalid url" }),
 });

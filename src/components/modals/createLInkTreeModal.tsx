@@ -60,6 +60,8 @@ export const CreateLinkTreeModal = () => {
     queryKey: ["link-trees"],
     refetchType: "active",
    });
+
+   toast.success("Link-tree Create Successfully");
    form.reset();
    onClose();
   } catch (error: any) {

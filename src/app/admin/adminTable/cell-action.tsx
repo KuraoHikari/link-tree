@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/useModalStore";
 
 interface CellActionProps {
  data: LinkTreeColumn;
@@ -28,6 +29,7 @@ export const CellAction: React.FC<CellActionProps> = ({
  data,
 }) => {
  const router = useRouter();
+ const { onOpen } = useModal();
  const [isMounted, setIsMounted] = useState(false);
 
  useEffect(() => {
@@ -60,7 +62,11 @@ export const CellAction: React.FC<CellActionProps> = ({
     >
      <FolderOpen className="mr-2 h-4 w-4" /> View Button
     </DropdownMenuItem>
-    <DropdownMenuItem onClick={() => {}}>
+    <DropdownMenuItem
+     onClick={() =>
+      onOpen("deleteLinkTree", { linkTreeId: data.id })
+     }
+    >
      <Trash className="mr-2 h-4 w-4" /> Delete
     </DropdownMenuItem>
    </DropdownMenuContent>

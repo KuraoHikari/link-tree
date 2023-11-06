@@ -26,6 +26,7 @@ import { buttonSchema } from "@/db/drizzle-zod/schemaValidation";
 import { useModal } from "@/hooks/useModalStore";
 import ky from "ky";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = buttonSchema.omit({
  id: true,
@@ -35,6 +36,7 @@ const formSchema = buttonSchema.omit({
 
 export const CreateButtonTreeModal = () => {
  const { isOpen, onClose, type, data } = useModal();
+ const queryClient = useQueryClient();
 
  const isModalOpen = isOpen && type === "createButtonTree";
 
@@ -59,6 +61,12 @@ export const CreateButtonTreeModal = () => {
      json: values,
     })
     .json();
+   await queryClient.invalidateQueries({
+    queryKey: ["button-trees"],
+    refetchType: "active",
+   });
+
+   toast.success("Button Created Successfully");
 
    form.reset();
    onClose();
