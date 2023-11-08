@@ -28,6 +28,7 @@ import { useModal } from "@/hooks/useModalStore";
 import ky from "ky";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 const formSchema = linkTreeSchema.omit({
  id: true,
@@ -130,6 +131,9 @@ export const CreateLinkTreeModal = () => {
         disabled={isLoading}
        >
         Create
+        {isLoading && (
+         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        )}
        </Button>
       </DialogFooter>
      </form>

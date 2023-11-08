@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/useModalStore";
 
 interface CellActionProps {
  data: ButtonTreeColumn;
@@ -27,7 +28,7 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({
  data,
 }) => {
- const router = useRouter();
+ const { onOpen } = useModal();
  const [isMounted, setIsMounted] = useState(false);
 
  useEffect(() => {
@@ -50,17 +51,25 @@ export const CellAction: React.FC<CellActionProps> = ({
     <DropdownMenuItem onClick={() => {}}>
      <Copy className="mr-2 h-4 w-4" /> Copy link
     </DropdownMenuItem>
-    <DropdownMenuItem onClick={() => {}}>
+    <DropdownMenuItem
+     onClick={() =>
+      onOpen("editButtonTree", {
+       linkTreeId: data?.linkTreeId,
+       buttonTreeId: data?.id,
+       buttonTree: data,
+      })
+     }
+    >
      <Edit className="mr-2 h-4 w-4" /> Edit
     </DropdownMenuItem>
     <DropdownMenuItem
      onClick={() =>
-      router.push(`admin/${data.id}/button-link`)
+      onOpen("deleteButtonTree", {
+       linkTreeId: data?.linkTreeId,
+       buttonTreeId: data?.id,
+      })
      }
     >
-     <FolderOpen className="mr-2 h-4 w-4" /> View Button
-    </DropdownMenuItem>
-    <DropdownMenuItem onClick={() => {}}>
      <Trash className="mr-2 h-4 w-4" /> Delete
     </DropdownMenuItem>
    </DropdownMenuContent>

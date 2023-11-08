@@ -27,6 +27,7 @@ import { useModal } from "@/hooks/useModalStore";
 import ky from "ky";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 const formSchema = buttonSchema.omit({
@@ -35,13 +36,13 @@ const formSchema = buttonSchema.omit({
  linkTreeId: true,
 });
 
-export const CreateButtonTreeModal = () => {
+export const EditButtonTreeModal = () => {
  const { isOpen, onClose, type, data } = useModal();
  const queryClient = useQueryClient();
 
- const isModalOpen = isOpen && type === "createButtonTree";
+ const isModalOpen = isOpen && type === "editButtonTree";
 
- const { linkTreeId } = data;
+ const { linkTreeId, buttonTreeId, buttonTree } = data;
 
  const form = useForm({
   resolver: zodResolver(formSchema),
@@ -51,6 +52,13 @@ export const CreateButtonTreeModal = () => {
   },
  });
 
+ useEffect(() => {
+  if (buttonTree) {
+   form.setValue("text", buttonTree.text);
+   form.setValue("link", buttonTree.link);
+  }
+ }, [buttonTree, form]);
+
  const isLoading = form.formState.isSubmitting;
 
  const onSubmit = async (
@@ -58,16 +66,21 @@ export const CreateButtonTreeModal = () => {
  ) => {
   try {
    await ky
-    .post(`/api/link-tree/${linkTreeId || ""}/button`, {
-     json: values,
-    })
+    .patch(
+     `/api/link-tree/${linkTreeId || ""}/button/${
+      buttonTreeId || ""
+     }`,
+     {
+      json: values,
+     }
+    )
     .json();
    await queryClient.invalidateQueries({
     queryKey: ["button-trees"],
     refetchType: "active",
    });
 
-   toast.success("Button Created Successfully");
+   toast.success("Button Edited Successfully");
 
    form.reset();
    onClose();
@@ -136,7 +149,7 @@ export const CreateButtonTreeModal = () => {
         className="w-full gap-2"
         disabled={isLoading}
        >
-        Create
+        Save
         {isLoading && (
          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         )}

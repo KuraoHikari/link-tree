@@ -9,11 +9,16 @@ export type ModalType =
  | "deleteButtonTree";
 
 interface ModalData {
+ linkTreeId?: string;
  linkTree?: {
   title: string;
   description: string;
  };
- linkTreeId?: string;
+ buttonTreeId?: string;
+ buttonTree?: {
+  text: string;
+  link: string;
+ };
 }
 
 interface ModalStore {

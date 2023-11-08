@@ -52,7 +52,14 @@ export const CellAction: React.FC<CellActionProps> = ({
     <DropdownMenuItem onClick={() => {}}>
      <Copy className="mr-2 h-4 w-4" /> Copy link
     </DropdownMenuItem>
-    <DropdownMenuItem onClick={() => {}}>
+    <DropdownMenuItem
+     onClick={() =>
+      onOpen("editLinkTree", {
+       linkTreeId: data.id,
+       linkTree: data,
+      })
+     }
+    >
      <Edit className="mr-2 h-4 w-4" /> Edit
     </DropdownMenuItem>
     <DropdownMenuItem

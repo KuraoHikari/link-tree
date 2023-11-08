@@ -18,13 +18,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FileWarning, Loader2 } from "lucide-react";
 
-export const DeleteLinkTreeModal = () => {
+export const DeleteButtonTreeModal = () => {
  const { isOpen, onClose, type, data } = useModal();
  const queryClient = useQueryClient();
 
- const isModalOpen = isOpen && type === "deleteLinkTree";
+ const isModalOpen = isOpen && type === "deleteButtonTree";
 
- const { linkTreeId } = data;
+ const { buttonTreeId, linkTreeId } = data;
 
  const [isLoading, setIsLoading] = useState(false);
 
@@ -32,14 +32,16 @@ export const DeleteLinkTreeModal = () => {
   try {
    setIsLoading(true);
 
-   await ky.delete(`/api/link-tree/${linkTreeId}`);
+   await ky.delete(
+    `/api/link-tree/${linkTreeId}/button/${buttonTreeId}`
+   );
 
    await queryClient.invalidateQueries({
-    queryKey: ["link-trees"],
+    queryKey: ["button-trees"],
     refetchType: "active",
    });
 
-   toast.success("LinkTree Deleted Successfully");
+   toast.success("ButtonTree Deleted Successfully");
 
    onClose();
   } catch (error: any) {
@@ -61,7 +63,7 @@ export const DeleteLinkTreeModal = () => {
       This action cannot be undone. This will permanently
       delete your{" "}
       <span className="font-bold text-gray-200">
-       {linkTreeId}
+       {buttonTreeId}
       </span>{" "}
       and remove your data from our servers.
      </AlertDialogDescription>

@@ -14,6 +14,7 @@ import {
  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
  Dialog,
@@ -22,34 +23,42 @@ import {
  DialogHeader,
  DialogTitle,
 } from "@/components/ui/dialog";
-import { buttonSchema } from "@/db/drizzle-zod/schemaValidation";
+import { linkTreeSchema } from "@/db/drizzle-zod/schemaValidation";
 import { useModal } from "@/hooks/useModalStore";
 import ky from "ky";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
-const formSchema = buttonSchema.omit({
+const formSchema = linkTreeSchema.omit({
  id: true,
  userId: true,
- linkTreeId: true,
+ createdAt: true,
 });
 
-export const CreateButtonTreeModal = () => {
+export const EditLinkTreeModal = () => {
  const { isOpen, onClose, type, data } = useModal();
  const queryClient = useQueryClient();
 
- const isModalOpen = isOpen && type === "createButtonTree";
+ const isModalOpen = isOpen && type === "editLinkTree";
 
- const { linkTreeId } = data;
+ const { linkTreeId, linkTree } = data;
 
  const form = useForm({
   resolver: zodResolver(formSchema),
   defaultValues: {
-   text: "",
-   link: "",
+   title: "",
+   description: "",
   },
  });
+
+ useEffect(() => {
+  if (linkTree) {
+   form.setValue("title", linkTree.title);
+   form.setValue("description", linkTree.description);
+  }
+ }, [linkTree, form]);
 
  const isLoading = form.formState.isSubmitting;
 
@@ -58,17 +67,14 @@ export const CreateButtonTreeModal = () => {
  ) => {
   try {
    await ky
-    .post(`/api/link-tree/${linkTreeId || ""}/button`, {
-     json: values,
-    })
+    .patch(`/api/link-tree/${linkTreeId}`, { json: values })
     .json();
    await queryClient.invalidateQueries({
-    queryKey: ["button-trees"],
+    queryKey: ["link-trees"],
     refetchType: "active",
    });
 
-   toast.success("Button Created Successfully");
-
+   toast.success("Link-tree Edited Successfully");
    form.reset();
    onClose();
   } catch (error: any) {
@@ -86,7 +92,7 @@ export const CreateButtonTreeModal = () => {
    <DialogContent className="overflow-hidden">
     <DialogHeader>
      <DialogTitle className="text-2xl font-bold">
-      Create ButtonTree
+      Edit LinkTree
      </DialogTitle>
     </DialogHeader>
     <Form {...form}>
@@ -97,14 +103,14 @@ export const CreateButtonTreeModal = () => {
       <div className="space-y-4">
        <FormField
         control={form.control}
-        name="text"
+        name="title"
         render={({ field }) => (
          <FormItem>
-          <FormLabel>Text</FormLabel>
+          <FormLabel>Title</FormLabel>
           <FormControl>
            <Input
             disabled={isLoading}
-            placeholder="Enter text"
+            placeholder="Enter title"
             {...field}
            />
           </FormControl>
@@ -114,14 +120,14 @@ export const CreateButtonTreeModal = () => {
        />
        <FormField
         control={form.control}
-        name="link"
+        name="description"
         render={({ field }) => (
          <FormItem>
-          <FormLabel>Link</FormLabel>
+          <FormLabel>Description</FormLabel>
           <FormControl>
-           <Input
-            disabled={isLoading}
-            placeholder="Enter link"
+           <Textarea
+            placeholder="LinkTree Description"
+            className="resize-y"
             {...field}
            />
           </FormControl>
@@ -136,7 +142,7 @@ export const CreateButtonTreeModal = () => {
         className="w-full gap-2"
         disabled={isLoading}
        >
-        Create
+        Save
         {isLoading && (
          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         )}

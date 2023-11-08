@@ -7,6 +7,7 @@ export type ButtonTreeColumn = {
  id: string;
  text: string;
  link: string;
+ linkTreeId: string;
 };
 
 export const columns: ColumnDef<ButtonTreeColumn>[] = [
